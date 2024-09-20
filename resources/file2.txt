@@ -1,0 +1,4 @@
+Sept. 20, 2024 6:23:40 PM FileSizeLogger logFileSize
+INFORMATION: File size of ./resources/file1.txt: 1 bytes
+Sept. 20, 2024 6:23:40 PM FileSizeLogger logFileSize
+INFORMATION: File size of ./resources/file1.txt: 1 bytes
