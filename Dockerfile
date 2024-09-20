@@ -1,4 +1,6 @@
-FROM openjdk:17-jdk-slim
+FROM debian:latest
+
+RUN apt update -y && apt install default-jdk -y
 
 COPY src/FileSizeLogger.java .
 
