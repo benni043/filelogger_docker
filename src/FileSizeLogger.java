@@ -7,6 +7,7 @@ import java.util.logging.SimpleFormatter;
 public class FileSizeLogger {
 
     private static final Logger logger = Logger.getLogger("FileLogger");
+    private static long lastLoggedFileSize = -1;  // Track the last logged file size
 
     public static void main(String[] args) {
         if (args.length != 2) {
@@ -55,6 +56,12 @@ public class FileSizeLogger {
                     WatchEvent<Path> ev = (WatchEvent<Path>) event;
                     Path fileName = ev.context();
                     if (fileName.endsWith(Paths.get(filePath).getFileName())) {
+                        // Add a small delay to allow the file write to finish
+                        try {
+                            Thread.sleep(100);  // 100ms delay to debounce the event
+                        } catch (InterruptedException e) {
+                            Thread.currentThread().interrupt();
+                        }
                         logFileSize(filePath);
                     }
                 }
@@ -72,7 +79,12 @@ public class FileSizeLogger {
     private static void logFileSize(String filePath) {
         try {
             long fileSize = Files.size(Paths.get(filePath));
-            logger.info("File size of " + filePath + ": " + fileSize + " bytes");
+
+            // Only log if the file size has changed to prevent duplicate logging
+            if (fileSize != lastLoggedFileSize) {
+                logger.info("File size of " + filePath + ": " + fileSize + " bytes");
+                lastLoggedFileSize = fileSize;
+            }
         } catch (IOException e) {
             System.err.println("Error getting file size: " + e.getMessage());
         }
